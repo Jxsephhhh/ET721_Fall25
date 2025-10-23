@@ -38,6 +38,24 @@ class TestStudentGrade(unittest.TestCase):
         self.assertIn("The average grade is: 87.50", output)
 
     # EXERCISE: Create a unittest for invalid data type, for example when the user input 
+
+    # Invalid data type for number of students (user inputs string)
+    @patch('builtins.input', side_effect=['Peter', '2', '80', '90'])
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_invalid_number_of_students_string(self, mock_stdout, mock_input):
+        studentgrade.main()
+        output = mock_stdout.getvalue()
+        self.assertIn("Invalid input. Please enter a positive number", output)
+
+    # Invalid data type for grade (user inputs string instead of number)
+    @patch('builtins.input', side_effect=['2', 'Peter', '85', '90'])
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_invalid_grade_string(self, mock_stdout, mock_input):
+        studentgrade.main()
+        output = mock_stdout.getvalue()
+        self.assertIn("Invalid! Enter a numerical value", output)
+
+
 # Run the unit test automatically
 if __name__ == '__main__':
     unittest.main()
