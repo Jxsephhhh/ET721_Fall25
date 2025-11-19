@@ -1,6 +1,7 @@
 import unittest
 from hw.bankaccount import BankAccount
 
+
 class TestBankAccount(unittest.TestCase):
 
     def setUp(self):
@@ -28,5 +29,6 @@ class TestBankAccount(unittest.TestCase):
         self.account.withdraw(75)
         self.assertEqual(self.account.get_balance(), 100)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
