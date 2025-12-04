@@ -1,23 +1,40 @@
 from django.shortcuts import render, redirect
-from .models import Todolist
-from .forms import Todolisform
+from . models import Todolist
+from .forms import Todolistform
 from django.views.decorators.http import require_POST
 
 # Create your views here.
 def index(request):
     todo_tasks = Todolist.objects.order_by('id')
-    form = Todolisform()
-    context = {'todo_tasks' : todo_tasks, 'form' : form} 
+    form = Todolistform()
+    context = {'todo_tasks' : todo_tasks, 'form':form} 
     return render(request, 'index.html', context)
 
 @require_POST
 def addTodoitem(request):
-    form = Todolisform(request.POST)
+    form = Todolistform(request.POST)   
+    print(request.POST['text'])  # testing 
 
-
-    # capture data from the form when the Add to list button is pressed
+    # capture the data from the form when the Add to list button is pressed 
     if form.is_valid():
-        form.save()
+        text = form.cleaned_data['text']  # get the submitted text 
+        Todolist.objects.create(text=text)  # save to the database 
 
+    return redirect('index')
 
+# function to select an item as complete 
+def completedTodo(request, todo_id):
+    todo = Todolist.objects.get(pk = todo_id)
+    todo.completed = True
+    todo.save()
+    return redirect('index')
+
+# function to delete all items that are marked as 'completed'
+def deletecompleted(request):
+    Todolist.objects.filter(completed__exact=True).delete()
+    return redirect('index')
+
+# function to delete all tasks in our list
+def deleteAll(request):
+    Todolist.objects.all().delete()
     return redirect('index')
